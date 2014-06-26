@@ -36,7 +36,7 @@ Now that we can serve from a public directory we can add static content in our p
 
 Back to the server-Side
 
-We want to create a barebones CRUD api, so first we need another module, expresses method-override module, which lets us use HTTP verbs such as PUT or DELETE in places where the client doesn't support it **NOTE:** ~~It is very important that this module is used before any module that needs to know the method of the request~~
+We want to create a barebones CRUD api, so first we need another module, expresses method-override module, which lets us use HTTP verbs such as PUT or DELETE in places where the client doesn't support it **NOTE:** __It is very important that this module is used before any module that needs to know the method of the request__``````````````
 
 ```bash
     npm install method-override --save
