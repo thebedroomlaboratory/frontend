@@ -1,5 +1,3 @@
-secure-rest
-===========
 ###steps
 npm init
 npm install express --save
@@ -235,7 +233,60 @@ Sources
 
 
 #part 2 - Validation and Securing Passwords
+##Validate, Validate, Validate...
+One of the most important steps in making any service secure is Validation. sometimes its to makesure usernames unique, only contain certain characters or passwords are long enough or not a regular insecure password like using "password" or "test"as a password.
 
+There are a number of ways to enforce rules some require the developer to manually create rules, other are built in and only require activation. Lets start with the built in options in mongoose. We can make our username field unique by adding that option to our schema. So lets update our Schema by adding `index: {unique: true, dropDups: true}}` to our options.
+
+```js
+var User = new Schema({
+    firstname: { type: String, required: true},
+    surname:  { type: String, required: true},
+    username: { type: String, required: true, index: {unique: true, dropDups: true}},
+    password: { type: String, required: true}
+});
+
+```
+Whats happening here is as well as enforcing a unique rule we are tell mongod to drop and dublicates. This is required for the unique rule to work IF you already have duplicates but beware, it does exactly what you think it does...it drops the records.
+If you don't have any duplicates then `index: {unique: true}` will work on its own.
+
+The next thing we might want to do is ensure our password is at least 6 characters long and only Alpha and Numerical characters.
+For this lets create a seperate module to house our validation rule. Inside lib create `validation.js`. What we want to do is create an Object consisting of our Validation rules.
+
+```js
+module.exports = {
+    isAlphaNumericOnly : function (input)
+    {
+        var letterNumber = /^[0-9a-zA-Z]+$/;
+        if(input.match(letterNumber))
+        {
+            return true;
+        }
+        return false;
+    },
+    isLongEnough : function (input){
+        if(input.length >= 6){
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+now inside our User CRUD module we can import this module and using Mongoose's Schema we can attach a middle man validation method using `path()`
+
+```js
+var validate = require('./validation');
+
+...
+
+User.path('username').validate(function (input){
+    return validate.isAlphaNumericOnly(input) && validate.isLongEnough(input);
+});
+```
+
+
+##Encryption
 1st Things first - NEVER EVER Store Passwords in Plain text!!! There is no excuse and too many companys are in the media these day because of stupidity and laziness...a Lazy encription is better then none.
 
 Having said that while not storing in plain text will prevent some (the lazy or uneducated hackers) from getting information, hashing will not neccessarly be enough. Some Developers use hash functions like MD5, SHA1, SHA256, SHA512 or SHA-3, some may even combine them some how and they suddenly feel safe.....YOU DATA IS NOT SAFE!
