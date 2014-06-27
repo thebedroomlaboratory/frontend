@@ -318,8 +318,98 @@ A modern server can calculate the MD5 hash of about [330MB every second](http://
 Enter bcrypt...
 bcrypt is a key derivation function for passwords designed by Niels Provos and David Mazières, based on the Blowfish cipher. It uses a variant of the Blowfish’s keying schedule, and introduces a work factor to determine how expensive the hash function will be. This makes it more future proof then the previously mentioned hash function because computers get faster you can increase the work factor and the hash will get slower. so instead of cracking a password in 40 seconds,it could take up to 12 years
 
-SO lets start by installinf bcrypt
+First lets update our schemas with a method which will eventually hash our passwords and another to compare a password with the hashed value in the database. In `user-curd.js` after creating our Schema add the following:
+
+```js
+User.methods.hashPassword = function (password){
+    return password;
+};
+
+User.methods.comparePassword = function (password){
+    return true;  
+};
+
+```
+What we have done here is done here is create 2 instance methods on our schema. What that means is if we have retrieved a particular user we can perform some action in terms of that particular user. so we can pass a password and compare it to 'this.password' , the current users password. Let's make this a little clearer by incorporating it. inside our `server.js` inside our create `post` method remove the password from the `new User()` and add it after but well use our hashPassword method
+
+```js
+var user = new UserModel({
+        firstname: request.body.firstname,
+        surname:  request.body.surname,
+        username: request.body.username,
+        //password: request.body.password
+        
+   });
+ user.password = user.hashPassword(request.body.password);
+``` 
+Now at the moment this only supplies the same password but hopefully it make it a little clearer. Lets add a method to our Restful Service to allow us to update a users password.
+
+```js
+app.put('/api/user/:id/pwupdate', function (request, response){
+    return UserModel.findById(request.params.id, function (error, user) {
+        if(!user) {
+            response.statusCode = 404;
+            return response.send({ error: 'Not found' });
+        }
+        var oldpass = request.body.oldpassword;
+        var newPass= user.hashPassword(request.body.newpassword);
+        if(user.comparePassword(oldpass)){
+           user.password = newPass;
+        return user.save(function (error) {
+            if (!error) {
+                console.log("user updated");
+                return response.send({ status: 'OK', user:user });
+            } else {
+                if(error.name == 'ValidationError') {
+                    response.statusCode = 400;
+                    return response.send({ error: 'Validation error' });
+                } else {
+                    response.statusCode = 500;
+                   return response.send({ error: 'Server error' });
+                }
+                
+            }
+        });
+        }
+       console.log("Password Wrong: "+error);
+        return response.send({ error: 'ERROR'});
+        
+    });
+});
+
+```
+
+Don't be afraid of this function, its almost the exact same as the update user function except instead of updating all the users fields we are only supplying a new password and old password and updating the password if the old password supplied matches the one in the database.
+
+But at the moment they are just pass through functions, the password will always update and when we create a user the password is exactly what we supply. Try all the methods in Postman and you'll should see the same results as before.
+
+SOooooooo.... lets start get encrypting!!!
+
+Firtly install bcrypt
 `npm install bcrypt --save`
+
+Next we need to require it in our Schemas. Inside our `user-crud.js` add the following:
+```js
+var bcrypt = require('bcrypt');
+```
+
+Now lets update our 2 instance methods
+
+```js
+// Here we're using bcrypt to generate a Salt and then hash our password
+User.methods.hashPassword = function (password){
+    var salt = bcrypt.genSaltSync(10);
+    var hash = bcrypt.hashSync(password, salt);
+    return hash;
+};
+// Here we're using bcrypt to compare a supplied password with the hashed one in the Database
+User.methods.comparePassword = function (password){
+    return bcrypt.compareSync(password, this.password);
+    
+};
+```
+
+As you can see we bcrypt does all the have lifting , all we gotta do is use it.
 
 
 

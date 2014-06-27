@@ -34,8 +34,9 @@ app.post('/api/user', function (request, response) {
         firstname: request.body.firstname,
         surname:  request.body.surname,
         username: request.body.username,
-        password: request.body.password
+        
    });
+   user.password = user.hashPassword(request.body.password);
    user.save( function (error){
         if(!error){
             console.log("User '"+user.username+"' Created!");
@@ -61,6 +62,39 @@ app.get('/api/user/:id', function (request, response) {
             console.log('Internal error(%d): %s',response.statusCode,error.message);
             return response.send({ error: 'Server error' });
         }
+    });
+});
+
+app.put('/api/user/:id/pwupdate', function (request, response){
+    return UserModel.findById(request.params.id, function (error, user) {
+        if(!user) {
+            response.statusCode = 404;
+            return response.send({ error: 'Not found' });
+        }
+        var oldpass = request.body.oldpassword;
+        var newPass= user.hashPassword(request.body.newpassword);
+        console.log("old Password: "+oldpass);
+        if(user.comparePassword(oldpass)){
+           user.password = newPass;
+        return user.save(function (error) {
+            if (!error) {
+                console.log("user updated");
+                return response.send({ status: 'OK', user:user });
+            } else {
+                if(error.name == 'ValidationError') {
+                    response.statusCode = 400;
+                    return response.send({ error: 'Validation error' });
+                } else {
+                    response.statusCode = 500;
+                   return response.send({ error: 'Server error' });
+                }
+                
+            }
+        });
+        }
+       console.log("Password Wrong: "+error);
+        return response.send({ error: 'ERROR'});
+        
     });
 });
 
