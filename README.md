@@ -1,3 +1,5 @@
+Secure Restful API
+=========
 ###steps
 npm init
 npm install express --save
@@ -250,7 +252,7 @@ var User = new Schema({
 Whats happening here is as well as enforcing a unique rule we are tell mongod to drop and dublicates. This is required for the unique rule to work IF you already have duplicates but beware, it does exactly what you think it does...it drops the records.
 If you don't have any duplicates then `index: {unique: true}` will work on its own.
 
-The next thing we might want to do is ensure our password is at least 6 characters long and only Alpha and Numerical characters.
+The next thing we might want to do is ensure our password/username is at least 6 characters long and only Alpha and Numerical characters.
 For this lets create a seperate module to house our validation rule. Inside lib create `validation.js`. What we want to do is create an Object consisting of our Validation rules.
 
 ```js
@@ -269,6 +271,13 @@ module.exports = {
             return true;
         }
         return false;
+    },
+    isGoodPassword : function (iput)
+    {
+        // at least one number, one lowercase and one uppercase letter
+        // at least six characters
+        var re = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+        return re.test(str);
     }
 }
 ```
@@ -279,9 +288,12 @@ now inside our User CRUD module we can import this module and using Mongoose's S
 var validate = require('./validation');
 
 ...
-
+/* include after Schema is created */
 User.path('username').validate(function (input){
     return validate.isAlphaNumericOnly(input) && validate.isLongEnough(input);
+});
+User.path('password').validate(function (input){
+    return validate.isGoodPassword(input) && validate.isLongEnough(input);
 });
 ```
 
