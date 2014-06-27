@@ -297,6 +297,16 @@ User.path('password').validate(function (input){
 });
 ```
 
+What about SQL injection?
+>As a client program assembles a query in MongoDB, it builds a BSON object, not a string. Thus traditional SQL injection attacks are not a problem. 
+
+[OTHER IMPORTANT VALIDATION ... $ Escaping](http://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection)
+
+
+
+
+
+
 
 ##Encryption
 1st Things first - NEVER EVER Store Passwords in Plain text!!! There is no excuse and too many companys are in the media these day because of stupidity and laziness...a Lazy encription is better then none.
