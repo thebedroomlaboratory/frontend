@@ -409,7 +409,9 @@ User.methods.comparePassword = function (password){
 };
 ```
 
-As you can see we bcrypt does all the have lifting , all we gotta do is use it.
+BOOM! We are now Encrypting our Passwords and as you can see we bcrypt does all the have lifting , all we gotta do is use it. And our Application is that little more secure.
+
+In the The Next part we will look at using OAuth so that only Authenticated requests can access our restful service.
 
 
 
