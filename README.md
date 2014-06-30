@@ -1,19 +1,35 @@
-Secure Restful API
+Restful API With Node.JS
 =========
-###steps
+
+##What is a REST?
+REST (**RE**presentational **S**tate **T**ransfer) is an architecture style for designing networked applications. It Relies on Stateless, Client-Server, Cacheable Communicationjs Protocol and is Most often done so over HTTP. It allows CRUD (Create, Read, Update & Delete) Operations  over HTTP Requests using `POST`, `GET` &, `DELETE`. REST allows applications to retrieve a resource using a URL
+e.g. Yahoo's weather API allows us to get a XML Resource containing the forcast for a location for example <a href="http://weather.yahooapis.com/forecastrss?w=560743&u=c">http://weather.yahooapis.com/forecastrss?w=560743&u=c</a> allows us to get the forcast for Dublin, Ireland with Tempature in Degrees Celcius.
+
+Resource Do not have to be in XML, they can be in almost any format, CVS, JSON (which is what we will be using later on) or even HTML but this is not recommended unlessyou are required to return a human readable Document. If ypou would like to go into more detail such as the Key components or comparison with SOAP I recommend chcking out <a href="http://rest.elkstein.org/">this Blog</a>
+
+I chose to persue a RESTful Service purely because of its simplicty in setting up. So without further ado....Lets Jump in.
+
+Lets Set up a basic Node.js Project. First we need to create a folder and from inside initialise a Node app, then Install a few modules. We will be using the <a href="">Express 4.0</a> framework to do most of the heavy lifting, with a few modules to make things a little more convient.
+
+```bash
+// init project : will require some user interaction such as enter project name and version
 npm init
+// installs express and saves to dependiences in package.json created in step above
 npm install express --save
+// installs path, a module containing utilities for dealing with file paths
 npm install path --save
-
-
+```
+Now create a `server.js` file in the main project directory and add the following
 
 create server.js and code most basic server
+
 ```js
 var express = require('express');
 var path = require('path');
 var app = express();
 
-app.use(express.static(path.join(__dirname, "public"))); // starting static fileserver, that will watch `public` folder (in our case there will be `index.html`)
+// starting static fileserver, that will watch `public` folder (in our case there will be `index.html`)
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/api', function(request, response){
     response.send('BAM! you got a response');
@@ -23,25 +39,31 @@ app.listen(1234, function(){
     console.log('Our First Express/Node Server listening on port 1234');
 });
 ```
+
+BAM! There you have it, a very simple RESTful service. Note we also went a small step further then the scope of the project with the lin `app.use(express.static(path.join(__dirname, "public"))); ` . All this does is allows use to server static files from a public directory, so as well as creating a very basic RESTful service we also created a very basic File Server.
+
 Now that we can serve from a public directory we can add static content in our public directory
-    If you want to continue with front end dev you can install  bower for front end dependencie (npm of the front end).
-        `npm install bower --save`
-    We can define where our bower dependences are installed inside a `.bowerrc` with a path
-        ```json
-        {
-            "location" : "public/js/vendor"
-        }
-        ```
-    We will continue with this later when we want to combine our server-side and Front end into a fullstack app.
+If you want to continue with front end dev you can install  bower for front end dependencie (npm of the front end).
+`npm install bower --save`
+We can define where our bower dependences are installed inside a `.bowerrc` with a path
+```json
+{
+    "location" : "public/js/vendor"
+}
+```
+Give it a go, save a basic HTML Page into the public directory and point your browser to the<a href="http://localhost:1234">localhost on port 1234</a> and you sould retrieve the HTML page in the public directory. Then add `/api` the url and you should see a simple test output saying `BAM! you got a response`
+
+We will touch on this more in future  when we want to combine our server-side and Front end into a fullstack app. For now I won't be covering anymore front end for this post.
+
+
 
 Back to the server-Side
 
-We want to create a barebones CRUD api, so first we need another module, expresses method-override module, which lets us use HTTP verbs such as PUT or DELETE in places where the client doesn't support it **NOTE:** It is very important that this module is used before any module that needs to know the method of the request
-
+We want to create a barebones CRUD api, so first we need another module, expresses `method-override` module, which lets us use HTTP verbs such as PUT or DELETE in places where the client doesn't support it **NOTE:** It is very important that this module is used before any module that needs to know the method of the request, otherwise it could cause issues which may be difficult to track down. So lets install it:
 ```bash
     npm install method-override --save
 ```
-and inside server.js add the following just after the express require
+Now inside server.js add the following just after the express require
 ```js
 //add after our express require
 var methodOverride = require('method-override');
@@ -49,7 +71,7 @@ var methodOverride = require('method-override');
 app.use(methodOverride());
 ```
 
-No we can simulate DELETE and PUT, so lets add some Endpoints. add the following just before the `app.listen(...)`
+No we can simulate DELETE and PUT, so lets add some Endpoints to our REST Api. Add the following just before the `app.listen(...)`
 ```js
 app.get('/api/user', function(request, response) {
     response.send('This is not implemented now');
@@ -71,16 +93,22 @@ app.delete('/api/user/:id', function (request, response){
     response.send('This is not implemented now');
 });
 ```
-So before we can take the next step with our restfull api we need to set up where and how our data is stored. This is where [MongoDB]() & [Mongoose.js]() come into play..
+What we have done here is create a Skeleton for:
+1 - `GET`ting all users @ `/api/user`
+2 - `POST`ing or Persisting/Saving a new user to same URL
+3 - `GET`ting a user of a particular `id` @ `/api/user/:id` e.g. `/api/user/12345`
+4 - 'PUT'ting or updating a particular user @ the same URL
+5 - 'DELETE' a particular User
 
+BUT.....before we can take the next step with our restfull api we need to set up where and how our data is stored. This is where [MongoDB](http://www.mongodb.org/) & [Mongoose.js](http://mongoosejs.com) come into play..
 
-Firstly make sure you have MongoDB running. this can usually be done running the command `mongod`
+Firstly make sure you have MongoDB installed(Installers are available[here](http://www.mongodb.org/downloads), I Personally used [Homebrew to install](http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/)) and running. Once installed you can usually start by running the command `mongod`.
 
-next install the Node Mongodb module as well as the Mongoose.js module
+Next install the Node Mongodb module as well as the Mongoose.js module
 ```bash
 npm install mongoose --save
 ```
-So rather then make our Server more complex then it needs to be, lets create a CRUD module to store our database interaction. create a new folder called lib and a new javascript "user-crud.js"
+Rather then make our Server overly complex and confusing then it needs to be, lets create a CRUD module to store our database interaction. Create a new folder called lib and a new javascript file "user-crud.js"
 
 So lets get a connection to mongodb going...
 
@@ -99,6 +127,8 @@ db.once('open', function(){
     console.log("Connected successfull!")
 });
 ```
+
+
 next we want to create a Schema and from that a Model which we can export to use in our serve routes:
 
 ```js
@@ -298,7 +328,7 @@ User.path('password').validate(function (input){
 ```
 
 What about SQL injection?
->As a client program assembles a query in MongoDB, it builds a BSON object, not a string. Thus traditional SQL injection attacks are not a problem. 
+>As a client program assembles a query in MongoDB, it builds a BSON object, not a string. Thus traditional SQL injection attacks are not a problem.
 
 [OTHER IMPORTANT VALIDATION ... $ Escaping](http://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection)
 
@@ -318,100 +348,8 @@ A modern server can calculate the MD5 hash of about [330MB every second](http://
 Enter bcrypt...
 bcrypt is a key derivation function for passwords designed by Niels Provos and David Mazières, based on the Blowfish cipher. It uses a variant of the Blowfish’s keying schedule, and introduces a work factor to determine how expensive the hash function will be. This makes it more future proof then the previously mentioned hash function because computers get faster you can increase the work factor and the hash will get slower. so instead of cracking a password in 40 seconds,it could take up to 12 years
 
-First lets update our schemas with a method which will eventually hash our passwords and another to compare a password with the hashed value in the database. In `user-curd.js` after creating our Schema add the following:
-
-```js
-User.methods.hashPassword = function (password){
-    return password;
-};
-
-User.methods.comparePassword = function (password){
-    return true;  
-};
-
-```
-What we have done here is done here is create 2 instance methods on our schema. What that means is if we have retrieved a particular user we can perform some action in terms of that particular user. so we can pass a password and compare it to 'this.password' , the current users password. Let's make this a little clearer by incorporating it. inside our `server.js` inside our create `post` method remove the password from the `new User()` and add it after but well use our hashPassword method
-
-```js
-var user = new UserModel({
-        firstname: request.body.firstname,
-        surname:  request.body.surname,
-        username: request.body.username,
-        //password: request.body.password
-        
-   });
- user.password = user.hashPassword(request.body.password);
-``` 
-Now at the moment this only supplies the same password but hopefully it make it a little clearer. Lets add a method to our Restful Service to allow us to update a users password.
-
-```js
-app.put('/api/user/:id/pwupdate', function (request, response){
-    return UserModel.findById(request.params.id, function (error, user) {
-        if(!user) {
-            response.statusCode = 404;
-            return response.send({ error: 'Not found' });
-        }
-        var oldpass = request.body.oldpassword;
-        var newPass= user.hashPassword(request.body.newpassword);
-        if(user.comparePassword(oldpass)){
-           user.password = newPass;
-        return user.save(function (error) {
-            if (!error) {
-                console.log("user updated");
-                return response.send({ status: 'OK', user:user });
-            } else {
-                if(error.name == 'ValidationError') {
-                    response.statusCode = 400;
-                    return response.send({ error: 'Validation error' });
-                } else {
-                    response.statusCode = 500;
-                   return response.send({ error: 'Server error' });
-                }
-                
-            }
-        });
-        }
-       console.log("Password Wrong: "+error);
-        return response.send({ error: 'ERROR'});
-        
-    });
-});
-
-```
-
-Don't be afraid of this function, its almost the exact same as the update user function except instead of updating all the users fields we are only supplying a new password and old password and updating the password if the old password supplied matches the one in the database.
-
-But at the moment they are just pass through functions, the password will always update and when we create a user the password is exactly what we supply. Try all the methods in Postman and you'll should see the same results as before.
-
-SOooooooo.... lets start get encrypting!!!
-
-Firtly install bcrypt
+SO lets start by installinf bcrypt
 `npm install bcrypt --save`
-
-Next we need to require it in our Schemas. Inside our `user-crud.js` add the following:
-```js
-var bcrypt = require('bcrypt');
-```
-
-Now lets update our 2 instance methods
-
-```js
-// Here we're using bcrypt to generate a Salt and then hash our password
-User.methods.hashPassword = function (password){
-    var salt = bcrypt.genSaltSync(10);
-    var hash = bcrypt.hashSync(password, salt);
-    return hash;
-};
-// Here we're using bcrypt to compare a supplied password with the hashed one in the Database
-User.methods.comparePassword = function (password){
-    return bcrypt.compareSync(password, this.password);
-    
-};
-```
-
-BOOM! We are now Encrypting our Passwords and as you can see we bcrypt does all the have lifting , all we gotta do is use it. And our Application is that little more secure.
-
-In the The Next part we will look at using OAuth so that only Authenticated requests can access our restful service.
 
 
 
