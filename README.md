@@ -2,7 +2,7 @@ Restful API With Node.JS
 =========
 
 ##What is a REST?
-REST (**RE**presentational **S**tate **T**ransfer) is an architecture style for designing networked applications. It Relies on Stateless, Client-Server, Cacheable Communicationjs Protocol and is Most often done so over HTTP. It allows CRUD (Create, Read, Update & Delete) Operations  over HTTP Requests using `POST`, `GET` &, `DELETE`. REST allows applications to retrieve a resource using a URL
+**REST** (Representational State Transfer) is an architecture style for designing networked applications. It Relies on Stateless, Client-Server, Cacheable Communicationjs Protocol and is Most often done so over HTTP. It allows CRUD (Create, Read, Update & Delete) Operations  over HTTP Requests using `POST`, `GET` &, `DELETE`. REST allows applications to retrieve a resource using a URL
 e.g. Yahoo's weather API allows us to get a XML Resource containing the forcast for a location for example <a href="http://weather.yahooapis.com/forecastrss?w=560743&u=c">http://weather.yahooapis.com/forecastrss?w=560743&u=c</a> allows us to get the forcast for Dublin, Ireland with Tempature in Degrees Celcius.
 
 Resource Do not have to be in XML, they can be in almost any format, CVS, JSON (which is what we will be using later on) or even HTML but this is not recommended unlessyou are required to return a human readable Document. If ypou would like to go into more detail such as the Key components or comparison with SOAP I recommend chcking out <a href="http://rest.elkstein.org/">this Blog</a>
