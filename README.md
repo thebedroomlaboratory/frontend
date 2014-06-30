@@ -365,6 +365,7 @@ User.path('firstname').validate(function (input){
 User.path('surname').validate(function (input){
     return validate.isSafe(input);
 },"You Cannot use the '$' Character");
+```
 
 Aaaaaaaaaaaand END SCENE!
 
