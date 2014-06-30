@@ -2,10 +2,12 @@ Restful API With Node.JS
 =========
 
 ##What is a REST?
-**REST** (Representational State Transfer) is an architecture style for designing networked applications. It Relies on Stateless, Client-Server, Cacheable Communicationjs Protocol and is Most often done so over HTTP. It allows CRUD (Create, Read, Update & Delete) Operations  over HTTP Requests using `POST`, `GET` &, `DELETE`. REST allows applications to retrieve a resource using a URL
-e.g. Yahoo's weather API allows us to get a XML Resource containing the forcast for a location for example <a href="http://weather.yahooapis.com/forecastrss?w=560743&u=c">http://weather.yahooapis.com/forecastrss?w=560743&u=c</a> allows us to get the forcast for Dublin, Ireland with Tempature in Degrees Celcius.
+**REST** (Representational State Transfer) is an architecture style for designing networked applications. It Relies on Stateless, Client-Server, Cacheable Communicationjs Protocol and is Most often done so over HTTP.
+It allows CRUD (Create, Read, Update & Delete) Operations over HTTP Requests using `POST`, `GET` &, `DELETE`.
+REST allows applications to retrieve a resource using a URL e.g.:
+Yahoo's weather API allows us to get a XML Resource containing the forcast for a location for example <a href="http://weather.yahooapis.com/forecastrss?w=560743&u=c">http://weather.yahooapis.com/forecastrss?w=560743&u=c</a> allows us to get the forcast for Dublin, Ireland with Tempature in Degrees Celcius.
 
-Resource Do not have to be in XML, they can be in almost any format, CVS, JSON (which is what we will be using later on) or even HTML but this is not recommended unlessyou are required to return a human readable Document. If ypou would like to go into more detail such as the Key components or comparison with SOAP I recommend chcking out <a href="http://rest.elkstein.org/">this Blog</a>
+Resource's Do not have to be in XML, they can be in almost any format, CVS, JSON (which is what we will be using later on) or even HTML but this is not recommended unlessyou are required to return a human readable Document. If ypou would like to go into more detail such as the Key components or comparison with SOAP I recommend chcking out <a href="http://rest.elkstein.org/">this Blog</a>
 
 I chose to persue a RESTful Service purely because of its simplicty in setting up. So without further ado....Lets Jump in.
 
@@ -127,9 +129,14 @@ db.once('open', function(){
     console.log("Connected successfull!")
 });
 ```
+Now if we run `node server.js` you should get the following output:
+```bash
+Our First Express/Node Server listening on port 1234
+Connected successfull!
+```
+If you are getting `connection error: failed to connect to [localhost:27017]` then you most likely forgot to start Mongodb.
 
-
-next we want to create a Schema and from that a Model which we can export to use in our serve routes:
+Next we want to create a Schema and from that a Model which we can export to use in our serve routes:
 
 ```js
 var Schema = mongoose.Schema;
@@ -146,12 +153,14 @@ var UserModel = mongoose.model("User", User);
 module.exports.UserModel = UserModel;
 
 ```
-Now in order to use this model we need to import it into out `server.js`
+
+Now in order to use this model we need to import it into out `server.js`.
+
 ```js
 //include after our other "required" modules
 var UserModel    = require('./lib/user-crud').UserModel;
 ````
-and now we update our routes, lets start with the add method , so we can actually create data. replace out post method with the following
+And now we update our routes, lets start with the `POST` method so we can actually create data. Replace out post method with the following
 
 ```js
 app.post('/api/user', function (request, response) {
@@ -174,18 +183,19 @@ app.post('/api/user', function (request, response) {
 });
 ```
 
-now if you try to post to this you may run into a few issues like "firstname not defined" and if you debug it you will probably find the same is true for request.body....
+Now if you try to post to this you may run into a few issues like "firstname not defined" and if you debug it you will probably find the same is true for request.body....
 
-This is because we need to include the express body parser, in Express 4 we do this by including the following with the rest of our configuration:
+This is because we need to include the express [body-parser](https://github.com/expressjs/body-parser), in Express 4 we do this by requireing it and including the following with the rest of our configuration:
 ```js
 app.use(bodyParser.urlencoded({extended: true}))
 ```
-this allows us to parse application/x-www-form-urlencoded paramaters, the extended true allows us to extended parse syntax with the qs module
+this allows us to parse application/x-www-form-urlencoded paramaters, the extended true allows us to extended parse syntax with the [qs module](https://github.com/visionmedia/node-querystring)
 
-now in postman swe setup a request up as shown below
+In order to test I am using [Postman](http://www.getpostman.com/). In postman we setup a request up as shown below
 [SCREENSHOT HERE]
 
-now lets set up our method to get all users, update a user and delete a user:
+
+Now lets set up our method to get all users, update a user and delete a user:
 ```js
 app.get('/api/user', function (request, response) {
     return UserModel.find(function (error, users) {
@@ -247,24 +257,21 @@ app.delete('/api/user/:id', function (request, response){
 });
 ```
 
-Test with postman
+Just to be Sure test with postman to verify all behave as expected, you can even use (Robomongo)[http://robomongo.org/] to see what data is in the Database.
 
-and there you go, your first restfull API... its pretty simple but also lacking. In the Next tutorial we're goin to introduce Mongoose validation to ensure values being added to our database are as expected, encription on our password field and also Access Controll using OAuth and Passport.js
+And there you go, your first restfull API... its pretty simple but also lacking a few important features. In the Next tutorial we're goin to introduce Mongoose validation to ensure values being added to our database are as expected, encription on our password field.
 
-
+<div style="display:none">
 Sources
 - http://aleksandrov.ws/2013/09/12/restful-api-with-nodejs-plus-mongodb/
 - http://scotch.io/bar-talk/expressjs-4-0-new-features-and-upgrading-from-3-0
 - https://github.com/expressjs/method-override
 - http://thewayofcode.wordpress.com/2013/04/21/how-to-build-and-test-rest-api-with-nodejs-express-mocha/
+</div>
 
 
-
-
-
-
-
-#part 2 - Validation and Securing Passwords
+Node Restful Api Part 2 - Validation and Securing Passwords
+=============================================
 ##Validate, Validate, Validate...
 One of the most important steps in making any service secure is Validation. sometimes its to makesure usernames unique, only contain certain characters or passwords are long enough or not a regular insecure password like using "password" or "test"as a password.
 
