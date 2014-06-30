@@ -261,13 +261,13 @@ Just to be Sure test with postman to verify all behave as expected, you can even
 
 And there you go, your first restfull API... its pretty simple but also lacking a few important features. In the Next tutorial we're goin to introduce Mongoose validation to ensure values being added to our database are as expected, encription on our password field.
 
-<div style="display:none">
-Sources
+
+#####Sources
 - http://aleksandrov.ws/2013/09/12/restful-api-with-nodejs-plus-mongodb/
 - http://scotch.io/bar-talk/expressjs-4-0-new-features-and-upgrading-from-3-0
 - https://github.com/expressjs/method-override
 - http://thewayofcode.wordpress.com/2013/04/21/how-to-build-and-test-rest-api-with-nodejs-express-mocha/
-</div>
+
 
 
 Node Restful Api Part 2 - Validation and Securing Passwords
