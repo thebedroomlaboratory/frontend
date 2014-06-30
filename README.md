@@ -261,21 +261,20 @@ Just to be Sure test with postman to verify all behave as expected, you can even
 
 And there you go, your first restfull API... its pretty simple but also lacking a few important features. In the Next tutorial we're goin to introduce Mongoose validation to ensure values being added to our database are as expected, encription on our password field.
 
-
-#####Sources
+<div style="display:none">
+Sources
 - http://aleksandrov.ws/2013/09/12/restful-api-with-nodejs-plus-mongodb/
 - http://scotch.io/bar-talk/expressjs-4-0-new-features-and-upgrading-from-3-0
 - https://github.com/expressjs/method-override
 - http://thewayofcode.wordpress.com/2013/04/21/how-to-build-and-test-rest-api-with-nodejs-express-mocha/
-
+</div>
 
 
 Node Restful Api Part 2 - Validation and Securing Passwords
 =============================================
-##Validate, Validate, Validate...
-One of the most important steps in making any service secure is Validation. sometimes its to makesure usernames unique, only contain certain characters or passwords are long enough or not a regular insecure password like using "password" or "test"as a password.
+This Post Continues on from the [pervious post]. We currently have a simple RESTful service to create,delete and update users, but right now we are not enforcing any rules as to what can be submitted.One of the most important steps in making any service secure and trustworthy is Validation. This could mean making sure usernames are unique, only contain certain characters or passwords are long enough or not a regular insecure password like  "password" or "test".
 
-There are a number of ways to enforce rules some require the developer to manually create rules, other are built in and only require activation. Lets start with the built in options in mongoose. We can make our username field unique by adding that option to our schema. So lets update our Schema by adding `index: {unique: true, dropDups: true}}` to our options.
+There are a number of ways to enforce rules. Some require the developer to manually create rules, other are built in and only require activation. Lets start with the built in options in mongoose. We can make our username field unique by adding that option to our schema. So lets update our Schema by adding `index: {unique: true, dropDups: true}}` to our options.
 
 ```js
 var User = new Schema({
@@ -286,7 +285,7 @@ var User = new Schema({
 });
 
 ```
-Whats happening here is as well as enforcing a unique rule we are tell mongod to drop and dublicates. This is required for the unique rule to work IF you already have duplicates but beware, it does exactly what you think it does...it drops the records.
+Whats happening here is as well as enforcing a unique rule we are telling mongod to drop any dublicates. This is required for the unique rule to work **IF** you already have duplicates but beware, it does exactly what you think it does...it drops the records.
 If you don't have any duplicates then `index: {unique: true}` will work on its own.
 
 The next thing we might want to do is ensure our password/username is at least 6 characters long and only Alpha and Numerical characters.
@@ -319,11 +318,10 @@ module.exports = {
 }
 ```
 
-now inside our User CRUD module we can import this module and using Mongoose's Schema we can attach a middle man validation method using `path()`
+Now inside our User CRUD module we can import this module and using Mongoose's Schema we can attach validations method using `path()`. These are methods that are called before adding to the Database, if they fail then they are not persisted to the Database. So lets incorperate the above methods into our Schema validation:
 
 ```js
 var validate = require('./validation');
-
 ...
 /* include after Schema is created */
 User.path('username').validate(function (input){
@@ -337,9 +335,40 @@ User.path('password').validate(function (input){
 What about SQL injection?
 >As a client program assembles a query in MongoDB, it builds a BSON object, not a string. Thus traditional SQL injection attacks are not a problem.
 
-[OTHER IMPORTANT VALIDATION ... $ Escaping](http://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection)
+Dollar Sign Operator Escaping
+>Field names in MongoDB’s query language have semantic meaning. The dollar sign (i.e $) is a reserved character used to represent operators (i.e. $inc.) Thus, you should ensure that your application’s users cannot inject operators into their inputs.[more info](http://docs.mongodb.org/manual/faq/developers/#how-does-mongodb-address-sql-or-query-injection)
 
+So While we may not need to worry about SQL injection, we do need to consider the `$` issue. There are many ways to approach this for example sawpping it for it's unicode character but we're gona be lazy and just reject any values that ask for it. Our username and password already do this as they do not allow characters outside of Alpha Numerical. We could apply this current validation to the first and second name but for the hell of it we'll create a new method. Add the following to our Validation.js file:
 
+```js
+
+    ,isSafe: function (input)
+    {
+        var re = /([$])/;
+        return !re.test(input);
+    }
+```
+All this does is return fals if contains `$` and true otherwise. So now we just need to add our path methods inside user-crud.js:
+```js
+User.path('firstname').validate(function (input){
+    return validate.isSafe(input);
+});
+User.path('surname').validate(function (input){
+    return validate.isSafe(input);
+});
+```
+and boom! Now we can feel a little more confident in our stored data. One Final change you can make is to return a more meaningfull error. This is as simple as including an extra string variable in the Validate Method:
+```js
+User.path('firstname').validate(function (input){
+    return validate.isSafe(input);
+},"You Cannot use the '$' Character");
+User.path('surname').validate(function (input){
+    return validate.isSafe(input);
+},"You Cannot use the '$' Character");
+
+Aaaaaaaaaaaand END SCENE!
+
+Not so difficult eh? The Next post will deal with Encryption....To many Companies are in hot water these days because they are storing sensitive information in plane text. I will show you how to apply basic encrytion to field in out Database.
 
 
 
