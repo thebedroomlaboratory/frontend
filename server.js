@@ -4,8 +4,7 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
 
-
-
+require('./lib/db.connect')();
 
 app.use(express.static(path.join(__dirname, "public"))); // starting static fileserver, that will watch `public` folder (in our case there will be `index.html`)
 //Handles post requests
