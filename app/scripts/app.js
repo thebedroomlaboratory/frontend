@@ -15,7 +15,9 @@ angular
     'ngResource',
     'ngRoute',
     'ngSanitize',
-    'ngTouch'
+    'ngTouch',
+    'tbl.services',
+    'tbl.config'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -26,6 +28,10 @@ angular
       .when('/about', {
         templateUrl: 'views/about.html',
         controller: 'AboutCtrl'
+      })
+      .when('/tbl', {
+        templateUrl: 'views/tbl.html',
+        controller: 'ZoneCtrl'
       })
       .otherwise({
         redirectTo: '/'
