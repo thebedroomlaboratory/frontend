@@ -1,39 +1,81 @@
-<div class="wrapper">
-  <div class="wrapper--top">
-    <div class="header"> <img src="images/Bedlab-logo.jpg" alt="Bedroom Lab Logo"> </div>
-    <div class="container--ws">
-      <h1>Wireless- Sensor</h1>
-      <div class="ws--graph"> 
-        <div tempature data="data" bar-height="20" bar-padding="5"></div>
-      </div>
-      <div class="ws--house"> <img src="images/house.jpg" alt="House" /> </div>
-      <div class="clear"></div>
-    </div>
-  </div>
-  <div class="wrapper--bottom">
-    <div class="container--ps">
-      <h1>Power Strip</h1>
-      <div class="ps-sockets">
-        <div class="ps-sockets-1"><img src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off"  style="display:none;" /> <img src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" /></div>
-        <div class="ps-sockets-2"><img src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /> <img src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" style="display:none;" /></div>
-        <div class="ps-sockets-3"> <img src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off"style="display:none;" /><img src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" /> </div>
-        <div class="ps-sockets-4"> <img src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /><img src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" style="display:none" /> </div>
-      </div>
-      <div class="ps-indicator">
-        <div class="ps-indicator-1"><img src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off"  style="display:none;" /> <img src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" /></div>
-        <div class="ps-indicator-2"><img src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off" /> <img src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" style="display:none;" /></div>
-        <div class="ps-indicator-3"> <img src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off"style="display:none;" /><img src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" /> </div>
-        <div class="ps-indicator-4"> <img src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off" /><img src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" style="display:none" /> </div>
-      </div>
-      <div class="ps-power">
-        <p>Total Power:<br>
-          <span class="power-consumtion">placeholder</span> watts</p>
+
+<div >
+  <div class="wrapper">
+    <div class="wrapper--top">
+      <div class="header"> <img src="images/Bedlab-logo.jpg" alt="Bedroom Lab Logo"> </div>
+      <div class="container--ws">
+        <h1>Wireless- Sensor</h1>
+        <div class="ws--graph">
+          
+          <div tempature data="data" bar-height="20" bar-padding="5"></div>
+         
+         </div>
+        <div class="ws--house"> <img src="images/house.jpg" alt="House" />
+            <div id="Light_1">
+              <input type="checkbox" id="bulb1" ng-checked="light_1_active"/>
+              <label for="bulb1"></label>
+            </div>
+            <div id="Light_2">
+              <input type="checkbox" id="bulb2" ng-checked="light_2_active"/>
+              <label for="bulb2"></label>
+            </div>
+            <div id="Light_3">
+              <input type="checkbox" id="bulb3" ng-checked="light_3_active"/>
+              <label for="bulb3"></label>
+            </div>
+         </div>
+        <div class="clear"></div>
       </div>
     </div>
-    <div class="container--ha">
-      <h1>House Alarm</h1>
-      <div class="door"> <img src="images/door--closed.jpg" alt="door closed" class="door--closed" style="display:none;" /> <img src="images/door--open.jpg" alt="door open" class="door--open" /> </div>
-      <div class="alarm"> <img src="images/alarm--on.jpg" alt="alarm on" class="alarm--on" style="display:none;" /> <img src="images/alarm--off.jpg" alt="alarm off" class="alarm--off" /> </div>
+    <div class="wrapper--bottom">
+      <div class="container--ps">
+        <h1>Power Strip</h1>
+        <div class="ps-sockets">
+          <div class="ps-sockets-1" ng-click="toggleSocket(0)">
+            <img ng-show="!sockets[0]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /> 
+            <img ng-show="sockets[0]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" />
+            </div>
+          <div class="ps-sockets-2" ng-click="toggleSocket(1)">
+            <img ng-show="!sockets[1]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /> 
+            <img ng-show="sockets[1]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" />
+          </div>
+          <div class="ps-sockets-3" ng-click="toggleSocket(2)"> 
+            <img ng-show="!sockets[2]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off"  />
+            <img ng-show="sockets[2]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" /> 
+          </div>
+          <div class="ps-sockets-4" ng-click="toggleSocket(3)"> 
+            <img ng-show="!sockets[3]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" />
+            <img ng-show="sockets[3]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on"  /> 
+          </div>
+        </div>
+        <div class="ps-indicator">
+          <div class="ps-indicator-1 ps-indicator-pad" ng-click="toggleSocket(0)">
+            <img ng-show="!sockets[0]" src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off" /> 
+            <img ng-show="sockets[0]" src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" />
+          </div>
+          <div class="ps-indicator-2 ps-indicator-pad" ng-click="toggleSocket(1)">
+            <img ng-show="!sockets[1]" src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off" /> 
+            <img ng-show="sockets[1]" src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on"  />
+          </div>
+          <div class="ps-indicator-3 ps-indicator-pad" ng-click="toggleSocket(2)"> 
+            <img ng-show="!sockets[2]" src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off"/>
+            <img ng-show="sockets[2]" src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" /> 
+          </div>
+          <div class="ps-indicator-4 ps-indicator-pad" ng-click="toggleSocket(3)"> 
+            <img ng-show="!sockets[3]" src="images/ps-indicator--off.jpg" class="ps-indicator--off" alt="indicator off" />
+            <img ng-show="sockets[3]" src="images/ps-indicator--on.jpg" class="ps-indicator--on" alt="indicator on" /> 
+            </div>
+        </div>
+        <div class="ps-power">
+          <p>Total Power:<br>
+            <span class="power-consumtion">{{totalWatts}}</span> watts</p>
+        </div>
+      </div>
+      <div class="container--ha">
+        <h1>House Alarm</h1>
+        <div class="door" ng-click="toggleDoor()"> <img ng-show="!doorOpen" src="images/door--closed.jpg" alt="door closed" class="door--closed"  /> <img ng-show="doorOpen" src="images/door--open.jpg" alt="door open" class="door--open" /> </div>
+        <div class="alarm"> <img src="images/alarm--on.jpg" alt="alarm on" class="alarm--on" ng-show="doorOpen" /> <img src="images/alarm--off.jpg" alt="alarm off" class="alarm--off" ng-show="!doorOpen"/> </div>
+      </div>
     </div>
   </div>
 </div>
