@@ -72,11 +72,45 @@ img {
 .ps-indicator-pad{
 	padding-bottom: 22px;
 }
+
+.ps-indicator-pad:hover{
+	cursor: pointer;
+	-webkit-transform: scale(1.1,1.1);
+    -moz-transform:scale(1.1,1.1);
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+
+}
 .ps-indicator--off {
 	margin-top: 25%;
+	/*-webkit-opacity: 0.5;
+  -moz-opacity: 0.5;
+  transition: 0.5s ease;
+  -webkit-transition: 0.5s ease;
+  -moz-transition: 0.5s ease;*/
+}
+.ps-socket:hover {
+	cursor: pointer;	
+	-webkit-transform: scale(1.1,1.1);
+    -moz-transform:scale(1.1,1.1);
+    opacity: 1;
+    -webkit-opacity: 1;
+    -moz-opacity: 1;
+    
 }
 .ps-indicator--on {
 	margin-top: 25%;
+	/*-webkit-opacity: 0.5;
+  -moz-opacity: 0.5;
+  transition: 0.5s ease;
+  -webkit-transition: 0.5s ease;
+  -moz-transition: 0.5s ease;
+  */
+}
+.door:hover{
+	cursor: pointer;
+	opacity: 0.4;
 }
 .ps-power {
 	float: left;
@@ -102,6 +136,10 @@ img {
 	width: 15%;
 	float: right;
 	margin-top: 5%;
+}
+
+.Light:hover{
+	opacity: 0.4;
 }
 
 #Light_1{

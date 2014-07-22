@@ -11,15 +11,15 @@
          
          </div>
         <div class="ws--house"> <img src="images/house.jpg" alt="House" />
-            <div id="Light_1">
+            <div id="Light_1" class="Light">
               <input type="checkbox" id="bulb1" ng-checked="light_1_active"/>
               <label for="bulb1"></label>
             </div>
-            <div id="Light_2">
+            <div id="Light_2" class="Light">
               <input type="checkbox" id="bulb2" ng-checked="light_2_active"/>
               <label for="bulb2"></label>
             </div>
-            <div id="Light_3">
+            <div id="Light_3" class="Light">
               <input type="checkbox" id="bulb3" ng-checked="light_3_active"/>
               <label for="bulb3"></label>
             </div>
@@ -31,19 +31,19 @@
       <div class="container--ps">
         <h1>Power Strip</h1>
         <div class="ps-sockets">
-          <div class="ps-sockets-1" ng-click="toggleSocket(0)">
+          <div class="ps-socket ps-sockets-1" ng-click="toggleSocket(0)">
             <img ng-show="!sockets[0]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /> 
             <img ng-show="sockets[0]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" />
             </div>
-          <div class="ps-sockets-2" ng-click="toggleSocket(1)">
+          <div class="ps-socket ps-sockets-2" ng-click="toggleSocket(1)">
             <img ng-show="!sockets[1]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" /> 
             <img ng-show="sockets[1]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" />
           </div>
-          <div class="ps-sockets-3" ng-click="toggleSocket(2)"> 
+          <div class="ps-socket ps-sockets-3" ng-click="toggleSocket(2)"> 
             <img ng-show="!sockets[2]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off"  />
             <img ng-show="sockets[2]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on" /> 
           </div>
-          <div class="ps-sockets-4" ng-click="toggleSocket(3)"> 
+          <div class="ps-socket ps-sockets-4" ng-click="toggleSocket(3)"> 
             <img ng-show="!sockets[3]" src="images/power-socket--off.jpg" class="ps-socket--off" alt="socket off" />
             <img ng-show="sockets[3]" src="images/power-socket--on.jpg" class="ps-socket--on" alt="socket on"  /> 
           </div>
