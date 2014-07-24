@@ -6,6 +6,16 @@ angular.module('frontendApp')
 
         Powerstrip.query(function(response){
             $scope.powerstrip = response;
+            console.log("response",response);
+
+            console.log("response socket1",response.socket1);
+        });
+
+        Powerstrip.save(null, function(response){
+            $scope.powerstrip = response;
+           // console.log("response",response);
+
+            console.log("post yahoo",response.string);
         });
 
         /*    Hard Coded at moment*/

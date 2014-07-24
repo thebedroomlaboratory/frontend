@@ -63,7 +63,7 @@ module.exports = function(app){
 	        }
 	        var oldpass = request.body.oldpassword;
 	        var newPass= user.hashPassword(request.body.newpassword);
-	        console.log("old Password: "+oldpass);
+	        console.log('old Password: '+oldpass);
 	        if(user.comparePassword(oldpass)){
 	           user.password = newPass;
 	        return user.save(function (error) {
