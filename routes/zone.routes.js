@@ -14,117 +14,92 @@ var ZONE = {
 
 module.exports = function(app){
 	
-	/* For Development only */
-	app.get('/test/string', function (request, response) {
-
-		var object = {
-			string: "test"
-
-		}
-
-		response.send(object);
-		
+	//get all sensors & switches Status
+	app.get('/zone/id/:zone_id', function (request, response) {
+		//console.log('REQ', request);
+		ZoneModel.findOne({'zone_id': request.params.zone_id }, function (errors, zone){
+			if(errors){
+				console.log('ERROR', errors);
+				response.send('status', 'Unable to get Power Zone data')
+			}
+			response.send(zone);
+		});	
 	    
 	});
-
 
 	//get all sensors & switches Status
-	app.get('/zone/powerstrip', function (request, response) {
+	app.post('/zone/id/:zone_id', function (request, response) {
 
-		var object = {
-			sensorType : 0,
-			voltage : 35,
-			power: 300,
-			socket1 : true,
-			socket2 : true,
-			socket3 : true,
-			socket4 : true,
-			override1: false,
-			override2: false,
-			override3: false,
-			override4: false
-		}
-		response.send(object);
-		
+		var lightStatus = request.body.lightStatus,
+			humidity = request.body.humidity,
+			tempature = request.body.tempature,
+			lux = request.body.lux,
+			doorOpen = request.body.doorOpen;
+		//console.log('REQ', request);
+		ZoneModel.findOne({'zone_id': request.params.zone_id }, function (errors, zone){
+			if(errors){
+				console.log('ERROR', errors);
+				response.send('status', 'Unable to get Zone \''+request.params.zone_id+'\' data')
+			}
+
+			if(lightStatus !== undefined && lightStatus !== null){
+					zone.lightStatus = lightStatus;
+			}
+			if(humidity !== undefined && humidity !== null){
+					zone.humidity = humidity;
+			}
+			if(tempature !== undefined && tempature !== null){
+					zone.tempature = tempature;
+			}
+			if(lux !== undefined && lux !== null){
+					zone.lux = lux;
+			}
+			if(doorOpen !== undefined && doorOpen !== null){
+					zone.doorOpen = doorOpen;
+			}
+
+
+			response.send(zone);
+		});	
 	    
 	});
+
 	//update socket
-	app.post('/zone/powerstrip/:id', function (request, response) {
+	app.post('/zone/powerstrip/', function (request, response) {
 
-		console.log(request.params.id);
-	
-		switch(request.params.id){
-			case '1':
-			console.log('case','one')
-			break;
-			case '2':
-			console.log('case','two')
-			break;
-			case '3':
-			console.log('case','three')
-			break;
-			case '4':
-			console.log('case','four')
-			break;
+		var socket1 = require.body.socket1,
+			socket2 = require.body.socket2,
+			socket3 = require.body.socket3,
+			socket4 = require.body.socket4;
 
-			default: 
-			console.log('case','default')
+		ZoneModel.findOne({'zone_name':ZONE.powerstrip}, function (errors, zone){
+				if(socket1 !== undefined && socket1 !== null){
+					zone.socket1 = socket1;
+				}
+				if(socket2 !== undefined && socket2 !== null){
+					zone.socket2 = socket2;
+				}
+				if(socket3 !== undefined && socket3 !== null){
+					zone.socket3 = socket3;
+				}
+				if(socket4 !== undefined && socket4 !== null){
+					zone.socket4 = socket4;
+				}
 
-		}
+				zone.save(function (err){
+					if(err){
+					 	console.log('Error', err);
+					 	response.send('error', err);
 
-		/*var socket1 = request.body.socket1,
-			socket2 = request.body.socket2,
-			socket3 = request.body.socket3,
-			socket4 = request.body.socket4;*/
+					 }
 
+					console.log('zone demoSensor completed');
+					response.send('status', 'Power Zone updated successfully');
+				});
 
+			});
 
-		Req("http://localhost:1234/test/string").pipe(response);
-
-	});
-
-	//get door status
-	app.get('/zone/door', function (request, response){
-
-		var sensor = {
-			sensorType : 1,
-			lux : 3000,
-			temp: 19,
-			humidity : 40,
-			lightingStatus : true,
-			door : true
-		}
-
-		response.send(object);
-
-	});
-	//get 
-	app.get('/zone/firstFloor/1', function (request, response){
-
-		var object = {
-			sensorType : 2,
-			lux : 3000,
-			temp: 19,
-			humidity : 40,
-			lightingStatus : true
-		};
-
-		response.send(object);
-
-	});
-	app.get('/zone/basic/1', function (request, response){
-
-		var object = {
-			sensorType : 2,
-			lux : 3000,
-			temp: 19,
-			humidity : 40,
-			lightingStatus : true
-		};
-
-		response.send(object);
-
-	});
+		});
 
 	//Node To Gallalio
 	app.get('/gal/all', function (request, response){
