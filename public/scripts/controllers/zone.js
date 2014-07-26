@@ -2,27 +2,65 @@
 
 angular.module('frontendApp')
     .controller('ZoneCtrl', ['$scope', 'Powerstrip', 'Zone', function($scope, Powerstrip, Zone){
-        $scope.powerstrip = {};
-        $scope.zones = {};
 
-        // TODO: delete me
-        var data = {};
+        $scope.zones = [];
+
         for(var i=1; i<5; i++){
-            data = Zone.get({zone_id: i});
-            console.log('Zone [' + i + '] data: ', data);
+            Zone.get({zone_id: i}).$promise
+                .then(function(zone){
+                    console.log(zone);
+                    $scope.zones.push(zone);
+                })
         }
 
-        // TODO: delete me
-        var sockets = [
-            {socket1: true},
-            {socket2: true},
-            {socket3: true},
-            {socket4: true}
-        ];
-
-        for(var i=0; i<sockets.length; i++){
-            Powerstrip.save({}, sockets[i]);
+        var _getZoneByNumber = function(zones, num){
+            for(var i=0; i<zones.length; i++){
+                if(zones[i].zone_id == num){
+                    return zones[i];
+                }
+            }
         }
+
+        $scope.getZoneName = function(zoneNum){
+            var zone = _getZoneByNumber($scope.zones, zoneNum);
+            return zone.zone_name;
+        }
+
+        $scope.getWirelessSensorData = function(zoneNum){
+            var zone = _getZoneByNumber($scope.zones, zoneNum);
+
+            console.log('$scope.zones',$scope.zones);
+
+            $scope.barChart = [];
+            $scope.barChart.push({
+                name: 'temperature',
+                score: zone.tempature
+            })
+            $scope.barChart.push({
+                name: 'light',
+                score: zone.lux
+            })
+        }
+
+        /**
+         * Update socket state.
+         *
+         * @type {boolean} socket is on or off.
+         */
+        $scope.sendSocketState = function(socketNum, socketState){
+            var state = {}
+            state['socket'+socketNum] = socketState;
+            Powerstrip.save({}, state);
+        }
+
+
+        /**
+         * ##################### Wireless Sensors ########################
+         */
+        $scope.sensor1 = {}
+        $scope.sensor2 = {}
+        $scope.sensor3 = {}
+
 
         /*    Hard Coded at moment*/
         $scope.totalWatts = 200;
@@ -33,14 +71,10 @@ angular.module('frontendApp')
 	    {
 	    	name: 'sensor2',
 	    	score: 34
-	    },
-	    {
-	    	name: 'sensor3',
-	    	score: 68
 	    }];
 	    $scope.doorOpen = false;
 	    $scope.toggleDoor = function (){
-	    	console.log("toggleDoor", $scope.doorOpen);
+	    	//console.log("toggleDoor", $scope.doorOpen);
 	    	if($scope.doorOpen == false){
 	    		$scope.doorOpen = true;
 	    	}
@@ -63,5 +97,6 @@ angular.module('frontendApp')
 	    $scope.light_1_active = true;
 	    $scope.light_2_active = true;
 	    $scope.light_3_active = true;
-	    console.log('socket1', $scope.sockets[1])
+
+
     }]);

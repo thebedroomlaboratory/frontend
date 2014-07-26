@@ -67,6 +67,8 @@ module.exports = function(app){
 	//update socket
 	app.post('/zone/powerstrip', function (request, response) {
 
+        console.log('request.body', request.body);
+
 		var socket1 = request.body.socket1,
 			socket2 = request.body.socket2,
 			socket3 = request.body.socket3,
@@ -153,7 +155,7 @@ module.exports = function(app){
 
 		console.log('request.body', request.body);
 
-		var voltage = request.body.voltage;
+		var voltage = request.body.voltage,
 			power = request.body.power,
 			zone_g_lux = request.body.zone_g_lux,
 			zone_g_temp = request.body.zone_g_temp,
