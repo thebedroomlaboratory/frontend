@@ -143,15 +143,15 @@ angular.module('d3.directives', ['d3'])
                 
 
                 scope.render = function (data) {
-                  console.log('Johns data', data);
+                  ////console.log('Johns data', data);
                    // remove all previous items before render
                   svg.selectAll('*').remove();
 
                   // If we don't pass any data, return out of the element
                   if (!data) return;
 
-                  console.log('element[0]).node().offsetWidth', d3.select(element[0]).node().offsetWidth);
-                  console.log('margin',margin);
+                 // //console.log('element[0]).node().offsetWidth', d3.select(element[0]).node().offsetWidth);
+                  ////console.log('margin',margin);
 
                   // setup variables
                   var width = d3.select(element[0]).node().offsetWidth - margin,
@@ -177,7 +177,10 @@ angular.module('d3.directives', ['d3'])
                           .attr('height', barHeight)
                           .attr('width', 140)
                           .attr('id', function (d, i){
-                            return "svg-bar-"+d.name;
+
+                            //var name = (d.name).replace(/\s+/g, '-').toLowerCase();
+
+                            return 'svg-bar-sensor'+i;
                           })
                           .attr('x', Math.round(margin / 2))
                           .attr('y', function (d, i) {
@@ -195,18 +198,18 @@ angular.module('d3.directives', ['d3'])
                       svg.selectAll("text")
                         .data(data)
                         .enter()
-                        .append("text").attr('x', function (d, i){
-                          i++;
+                        .append('text').attr('x', function (d, i){
+                          //i++;
                           var bar = angular.element(document.querySelector('#svg-bar-sensor'+i))
                           var attr = bar.attr('x');
 
-                          //console.log('xd', d);
+                          console.log('xd', d);
 
-                          //console.log('xi', i);
+                          console.log('xi', i);
                           return new Number(attr)+10;//'20';
                         })
                         .attr('y', function (d, i){
-                          i++;
+                          //i++;
                           console.log('xd', d);
                           console.log('xi', i);
                           
@@ -214,14 +217,14 @@ angular.module('d3.directives', ['d3'])
                           var bar = angular.element(document.querySelector('#svg-bar-sensor'+i))
                           var attr = bar.attr('y');
 
-                          
+                          console.log('#svg-bar-sensor'+i+' ')
                           console.log("attr",attr);
 
                           return new Number(attr)+(15);
                         })//'20')
                         .text(function (data){
                           return data.name+" : "+data.score;
-                        }).attr('style', 'font-size:12px;fill:#ffffff;stroke: #000000; stroke-width:0.1;');
+                        }).attr('style', 'font-size:12px;fill:#797777;stroke: #000000; stroke-width:0.1;');
 
 
 

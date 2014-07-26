@@ -29,6 +29,7 @@ module.exports = function(app){
 
 	//get all sensors & switches Status
 	app.post('/zone/id/:zone_id', function (request, response) {
+		console.log('request.body', request.body);
 
 		var lightStatus = request.body.lightStatus,
 			humidity = request.body.humidity,
@@ -58,8 +59,14 @@ module.exports = function(app){
 					zone.doorOpen = doorOpen;
 			}
 
+			zone.save(function (err){
+					if(err) console.log('Error', err);
 
-			response.send(zone);
+					console.log('zone update completed');
+					response.send(zone);
+				});
+			//response.send('status', 'Unable to get Zone \''+request.params.zone_id+'\' data')
+			
 		});	
 	    
 	});
@@ -68,11 +75,19 @@ module.exports = function(app){
 	app.post('/zone/powerstrip', function (request, response) {
 
         console.log('request.body', request.body);
+        //var json = JSON.parse(request.body);
+        //console.log('JSON',json)
+
 
 		var socket1 = request.body.socket1,
 			socket2 = request.body.socket2,
 			socket3 = request.body.socket3,
 			socket4 = request.body.socket4;
+
+			console.log('socket1', request.body['socket1']);
+			console.log('socket2', socket2);
+			console.log('socket3', socket3);
+			console.log('socket4', socket4);
 
 		ZoneModel.findOne({'zone_name':ZONE.powerstrip}, function (errors, zone){
 				if(socket1 !== undefined && socket1 !== null){

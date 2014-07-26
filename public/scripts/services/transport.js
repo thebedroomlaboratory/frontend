@@ -9,3 +9,4 @@ tblServices.factory('Zone', ['$resource', 'httpSettings', function($resource, ht
 tblServices.factory('Powerstrip', ['$resource', 'httpSettings', function($resource, httpSettings){
     return $resource('http://'+ httpSettings.baseUrl +':'+ httpSettings.basePort+'/zone/powerstrip/')
 }]);
+

@@ -7,25 +7,25 @@
         <h1>Wireless- Sensor</h1>
         <div class="ws--graph">
 
-          <label>{{getZoneName(2)}}</label>
-          <div tempature data="barchart" bar-height="20" bar-padding="5"></div>
+         <!-- <label>{{getZoneName(2)}}</label>-->
+          <!--<div tempature data="barchart" bar-height="20" bar-padding="5"></div>
           <label>{{getZoneName(3)}}</label>
           <div tempature data="data" bar-height="20" bar-padding="5"></div>
-          <label>{{getZoneName(4)}}</label>
+          <label>{{getZoneName(4)}}</label>-->
           <div tempature data="data" bar-height="20" bar-padding="5"></div>
          
          </div>
         <div class="ws--house"> <img src="images/house.jpg" alt="House" />
             <div id="Light_1" class="Light">
-              <input type="checkbox" id="bulb1" ng-checked="light_1_active"/>
+              <input type="checkbox" id="bulb1" ng-change="updateLight(1)" ng-model="light_1_active"/>
               <label for="bulb1"></label>
             </div>
             <div id="Light_2" class="Light">
-              <input type="checkbox" id="bulb2" ng-checked="light_2_active"/>
+              <input type="checkbox" id="bulb2" ng-change="updateLight(2)" ng-model="light_2_active"/>
               <label for="bulb2"></label>
             </div>
             <div id="Light_3" class="Light">
-              <input type="checkbox" id="bulb3" ng-checked="light_3_active"/>
+              <input type="checkbox" id="bulb3" ng-change="updateLight(3)" ng-model="light_3_active"/>
               <label for="bulb3"></label>
             </div>
          </div>
