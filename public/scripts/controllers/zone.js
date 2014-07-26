@@ -1,22 +1,28 @@
 'use strict';
 
 angular.module('frontendApp')
-    .controller('ZoneCtrl', ['$scope', 'Powerstrip', function($scope, Powerstrip){
+    .controller('ZoneCtrl', ['$scope', 'Powerstrip', 'Zone', function($scope, Powerstrip, Zone){
         $scope.powerstrip = {};
+        $scope.zones = {};
 
-        Powerstrip.query(function(response){
-            $scope.powerstrip = response;
-            console.log("response",response);
+        // TODO: delete me
+        var data = {};
+        for(var i=1; i<5; i++){
+            data = Zone.get({zone_id: i});
+            console.log('Zone [' + i + '] data: ', data);
+        }
 
-            console.log("response socket1",response.socket1);
-        });
+        // TODO: delete me
+        var sockets = [
+            {socket1: true},
+            {socket2: true},
+            {socket3: true},
+            {socket4: true}
+        ];
 
-        Powerstrip.save(null, function(response){
-            $scope.powerstrip = response;
-           // console.log("response",response);
-
-            console.log("post yahoo",response.string);
-        });
+        for(var i=0; i<sockets.length; i++){
+            Powerstrip.save({}, sockets[i]);
+        }
 
         /*    Hard Coded at moment*/
         $scope.totalWatts = 200;

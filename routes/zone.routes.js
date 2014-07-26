@@ -65,12 +65,12 @@ module.exports = function(app){
 	});
 
 	//update socket
-	app.post('/zone/powerstrip/', function (request, response) {
+	app.post('/zone/powerstrip', function (request, response) {
 
-		var socket1 = require.body.socket1,
-			socket2 = require.body.socket2,
-			socket3 = require.body.socket3,
-			socket4 = require.body.socket4;
+		var socket1 = request.body.socket1,
+			socket2 = request.body.socket2,
+			socket3 = request.body.socket3,
+			socket4 = request.body.socket4;
 
 		ZoneModel.findOne({'zone_name':ZONE.powerstrip}, function (errors, zone){
 				if(socket1 !== undefined && socket1 !== null){
