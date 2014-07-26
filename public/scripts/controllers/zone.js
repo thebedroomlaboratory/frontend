@@ -160,11 +160,22 @@ angular.module('frontendApp')
             //console.log("toggleDoor", $scope.doorOpen);
             if($scope.doorOpen == false){
                 $scope.doorOpen = true;
+
             }
             else if($scope.doorOpen == true){
                 $scope.doorOpen = false;
             }
-        }
+
+            var state = {
+                        doorOpen : $scope.doorOpen 
+                    };
+                $http({
+                method: 'POST',
+                url: 'http://localhost:9000/zone/id/2',
+                data: transform(state),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+                });
+            }
 
         //$scope.sockets = //[true, true, true, true]
 
